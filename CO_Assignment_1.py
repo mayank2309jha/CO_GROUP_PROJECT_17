@@ -52,32 +52,6 @@ functionOpcode = {'0': 'addition' ,
                   '19': 'halt'}
 
 
-#x = str(input())
-#lst = x.split(' ')
-
-#if lst[0] == 'add':
-    #r1 += r0
-#elif lst[1] == 'sub':
-    #1 = r2 - r3
-
-#for i in functionOpcode.keys():
-    #print(bin(int(i), 5))
-
-#print(bin(int(registerValue('r3')), 3))
-
-#a = True
-lst= []
-#try:
-#    while a:
-#        y = str(input())
-#        lst.append(y)
-#except ValueError:
-#    print("11001")
-
-
-#for i in lst:
-#    print(i)
-
 while True:
     line = input()
     if(line == "hlt"):
