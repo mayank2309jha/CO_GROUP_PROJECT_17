@@ -51,6 +51,7 @@ functionOpcode = {'0': 'addition' ,
                   '18': 'jumpifequal',
                   '19': 'halt'}
 
+lst = []
 
 while True:
     line = input()
