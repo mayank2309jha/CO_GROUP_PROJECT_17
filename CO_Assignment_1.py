@@ -1,6 +1,6 @@
 def bin(value, noOfDigits = 32 ):      # returns the binary value of the number
 
-    i = 1 << noOfDigits - 1            # Also takes the no of digitd to be displayed for representation
+    i = 1 << noOfDigits - 1            # Also takes the no of digit to be displayed for representation and default is 32
     x = ""
     while (i > 0):
         if ((value & i) != 0):
@@ -51,20 +51,108 @@ functionOpcode = {'0': 'addition' ,
                   '18': 'jumpifequal',
                   '19': 'halt'}
 
-lst = []
+
+
+def ADDITION():
+    pass
+
+def SUBTRACTION():
+    pass
+
+def MOVEIMMEDIATE():
+    pass
+
+def MOVEREGISTER():
+    pass
+
+def LOAD():
+    pass
+
+def STORE():
+    pass
+
+def MULTIPLY():
+    pass
+
+def DIVIDE():
+    pass
+
+def RIGHTSHIFT():
+    pass
+
+def LEFTSHIFT():
+    pass
+
+def EXCLUSIVEOR():
+    pass
+
+def OR():
+    pass
+
+def AND():
+    pass
+
+def INVERT():
+    pass
+
+def COMPARE():
+    pass
+
+def UNCONDITIONALJUMP():
+    pass
+
+def JUMPIFLESSTHAN():
+    pass
+
+def JUMPIFGREATERTHAN():
+    pass
+
+def JUMPIFEQUAL():
+    pass
+
+def HALT(s):
+    return bin(int(return_key(s)), 5) + "00000000000"
+
+
+def return_key(val):
+    for key, value in functionOpcode.items():
+        if value == val:
+            return key
+    return -1
+
+lst = [[]]
+x: str
+ans = []
 
 while True:
     line = input()
     if(line == "hlt"):
+        print(HALT('halt'))
         break
     elif(line == ""):
+
         continue
     else:
         lst = line.split(" ")
-        if lst[0] == 'mov' and  lst[2][0] == 'r':
-            p = 'moveregister'
+        if lst[0] == 'var':
+            x = lst[1]
+        if lst[0] == 'st' and lst[2] == x:
+            x = lst[1]
+        if lst[0] == 'mov':
+            if lst[2][0] == 'r':
+                p = 'moveregister'
+                p = return_key(p)
+                ans.append(bin(int(p), 5) + "00000" + registerValue(lst[1]) + registerValue(lst[2]))
+            else:
+                p = 'moveimmediate'
+                if(lst[2][0] == '$'):
+                    lst[2].removeprefix('$')
 
-        print(registerValue(lst[1]) + registerValue(lst[2]))
+                p = return_key(p)
+                ans.append(bin(int(p), 5) + registerValue(lst[1]) + bin(int(lst[2]), 8))
 
 
+
+for i in ans:
+    print(i)
 
