@@ -180,7 +180,6 @@ while True:
             EXCLUSIVEOR(destReg,SourceReg1, SourceReg2)
             p = 'addition'
             p = return_key(p)
-            print(binOfReg[binToDec(destReg)])
             ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
         if lst[0] == 'or':
             destReg = int(registerValue(lst[1]))
@@ -189,7 +188,7 @@ while True:
             OR(destReg,SourceReg1, SourceReg2)
             p = 'exclusiveor'
             p = return_key(p)
-            print(binOfReg[binToDec(destReg)])
+
             ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
         if lst[0] == 'and':
             destReg = int(registerValue(lst[1]))
@@ -198,7 +197,7 @@ while True:
             AND(destReg,SourceReg1, SourceReg2)
             p = 'and'
             p = return_key(p)
-            print(binOfReg[binToDec(destReg)])
+
             ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
 
 ###############################################################################
