@@ -130,7 +130,6 @@ while True:
         print(HALT('halt'))
         break
     elif(line == ""):
-
         continue
     else:
         lst = line.split(" ")
