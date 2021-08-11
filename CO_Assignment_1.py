@@ -48,17 +48,6 @@ functionOpcode = {'0': 'addition' ,
                   '17': 'jumpifgreaterthan',
                   '18': 'jumpifequal',
                   '19': 'halt'}
-binOfReg = {"r0": 0,
-            "r1": 0,
-            "r2": 0,
-            "r3": 0,
-            "r4": 0,
-            "r5": 0}
-def returnRegVal(r):
-    for key,value in binOfReg.items():
-        if value == r:
-            return key
-        return -1
 def binToDec(x):
     num = 0
     i = 0
@@ -69,17 +58,20 @@ def binToDec(x):
         i = i+1
         x = (x - y)/10
     return num
-#################################
-#################################
-#################################
-def ADDITION(reg1, reg2, reg3):
-    # Case for addition operation:
-    # Only reg1 value is going to get changed.
-    # We send in three registers in order of their
-    # appearance in the instruction line.
-    binOfReg['r1'] = binOfReg['r1'] + reg2 + reg3
-def SUBTRACTION():
-    pass
+#####################################################################
+def ADDITION(destReg,SourceReg1, SourceReg2):
+    # Here we will have the registerValue of our three registers.
+    destination = binToDec(destReg)
+    firstsource = binToDec(SourceReg1)
+    secondsource = binToDec(SourceReg2)
+    #x, y , z will be the index of binOfReg which is to be changed
+    binOfReg[destination] = binOfReg[firstsource] + binOfReg[secondsource]
+def SUBTRACTION(destReg,SourceReg1, SourceReg2):
+    destination = binToDec(destReg)
+    firstsource = binToDec(SourceReg1)
+    secondsource = binToDec(SourceReg2)
+    binOfReg[destination] = binOfReg[firstsource] - binOfReg[secondsource]
+#####################################################################
 def MOVEIMMEDIATE():
     pass
 def MOVEREGISTER():
@@ -88,20 +80,36 @@ def LOAD():
     pass
 def STORE():
     pass
-def MULTIPLY():
-    pass
+#####################################################################
+def MULTIPLY(destReg,SourceReg1, SourceReg2):
+    destination = binToDec(destReg)
+    firstsource = binToDec(SourceReg1)
+    secondsource = binToDec(SourceReg2)
+    binOfReg[destination] = binOfReg[firstsource] * binOfReg[secondsource]
+#####################################################################
 def DIVIDE():
     pass
 def RIGHTSHIFT():
     pass
 def LEFTSHIFT():
     pass
-def EXCLUSIVEOR():
-    pass
-def OR():
-    pass
-def AND():
-    pass
+#####################################################################
+def EXCLUSIVEOR(destReg,SourceReg1, SourceReg2):
+    destination = binToDec(destReg)
+    firstsource = binToDec(SourceReg1)
+    secondsource = binToDec(SourceReg2)
+    binOfReg[destination] = binOfReg[firstsource] ^ binOfReg[secondsource]
+def OR(destReg,SourceReg1, SourceReg2):
+    destination = binToDec(destReg)
+    firstsource = binToDec(SourceReg1)
+    secondsource = binToDec(SourceReg2)
+    binOfReg[destination] = binOfReg[firstsource] | binOfReg[secondsource]
+def AND(destReg,SourceReg1, SourceReg2):
+    destination = binToDec(destReg)
+    firstsource = binToDec(SourceReg1)
+    secondsource = binToDec(SourceReg2)
+    binOfReg[destination] = binOfReg[firstsource] & binOfReg[secondsource]
+#####################################################################
 def INVERT():
     pass
 def COMPARE():
@@ -114,23 +122,23 @@ def JUMPIFGREATERTHAN():
     pass
 def JUMPIFEQUAL():
     pass
-def HALT(s):
-    return bin(int(return_key(s)), 5) + "00000000000"
-########################
+############################################################
 def return_key(val):
     for key, value in functionOpcode.items():
         if value == val:
             return key
     return -1
-#########################
+#############################################################
 lst = [[]]
 x: str
 ans = []
 # ans is the 1d list in which all the binary output values are being stored
+binOfReg = [0,0,1,0,0,0];
+# An array containing the value contained in each register. Initially all elements are 0.
 while True:
     line = input()
     if(line == "hlt"):
-        print(HALT('halt'))
+        ans.append( bin(int(return_key('halt')),5)+"00000000000")
         break
     elif(line == ""):
         continue
@@ -138,39 +146,62 @@ while True:
         lst = line.split(" ")
         # MJ edits:
         if lst[0] == 'add':
-            reg1 = lst[1]
-            reg2 = returnRegVal(lst[2])
-            reg3 = returnRegVal(lst[3])
-            ADDITION(reg1, reg2, reg3)
+            destReg = int(registerValue(lst[1]))
+            SourceReg1 = int(registerValue(lst[2]))
+            SourceReg2 = int(registerValue(lst[3]))
+            ADDITION(destReg,SourceReg1, SourceReg2)
+            # Case for addition operation:
+            # Only reg1 value is going to get changed.
+            # We send in three registers in order of their
+            # appearance in the instruction line.
             p = 'addition'
             p = return_key(p)
             ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
-        # Case for addition operation:
-        # Only reg1 value is going to get changed.
-        # We send in three registers in order of their
-        # appearance in the instruction line.
         if lst[0] == 'sub':
+            destReg = int(registerValue(lst[1]))
+            SourceReg1 = int(registerValue(lst[2]))
+            SourceReg2 = int(registerValue(lst[3]))
+            SUBTRACTION(destReg,SourceReg1, SourceReg2)
             p = 'subtraction'
             p = return_key(p)
             ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
         if lst[0] == 'mul':
+            destReg = int(registerValue(lst[1]))
+            SourceReg1 = int(registerValue(lst[2]))
+            SourceReg2 = int(registerValue(lst[3]))
+            MULTIPLY(destReg,SourceReg1, SourceReg2)
             p = 'multiplication'
             p = return_key(p)
             ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
         if lst[0] == 'xor':
+            destReg = int(registerValue(lst[1]))
+            SourceReg1 = int(registerValue(lst[2]))
+            SourceReg2 = int(registerValue(lst[3]))
+            EXCLUSIVEOR(destReg,SourceReg1, SourceReg2)
             p = 'addition'
             p = return_key(p)
+            print(binOfReg[binToDec(destReg)])
             ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
         if lst[0] == 'or':
+            destReg = int(registerValue(lst[1]))
+            SourceReg1 = int(registerValue(lst[2]))
+            SourceReg2 = int(registerValue(lst[3]))
+            OR(destReg,SourceReg1, SourceReg2)
             p = 'exclusiveor'
             p = return_key(p)
+            print(binOfReg[binToDec(destReg)])
             ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
         if lst[0] == 'and':
+            destReg = int(registerValue(lst[1]))
+            SourceReg1 = int(registerValue(lst[2]))
+            SourceReg2 = int(registerValue(lst[3]))
+            AND(destReg,SourceReg1, SourceReg2)
             p = 'and'
             p = return_key(p)
+            print(binOfReg[binToDec(destReg)])
             ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
 
-###########################################
+###############################################################################
         if lst[0] == 'var':
             x = lst[1]
         if lst[0] == 'st' and lst[2] == x:
