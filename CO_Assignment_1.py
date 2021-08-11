@@ -48,14 +48,17 @@ functionOpcode = {'0': 'addition' ,
                   '17': 'jumpifgreaterthan',
                   '18': 'jumpifequal',
                   '19': 'halt'}
-binOfReg = {
-    'r0': 0000000000000000,
-    'r1': 0000000000000000,
-    'r2': 0000000000000000,
-    'r3': 0000000000000000,
-    'r4': 0000000000000000,
-    'r5': 0000000000000000,
-}
+binOfReg = {"r0": 0,
+            "r1": 0,
+            "r2": 0,
+            "r3": 0,
+            "r4": 0,
+            "r5": 0}
+def returnRegVal(r):
+    for key,value in binOfReg.items():
+        if value == r:
+            return key
+        return -1
 def binToDec(x):
     num = 0
     i = 0
@@ -66,18 +69,15 @@ def binToDec(x):
         i = i+1
         x = (x - y)/10
     return num
-
-
-
-
+#################################
+#################################
+#################################
 def ADDITION(reg1, reg2, reg3):
     # Case for addition operation:
     # Only reg1 value is going to get changed.
     # We send in three registers in order of their
     # appearance in the instruction line.
-
-    return reg1
-
+    binOfReg['r1'] = binOfReg['r1'] + reg2 + reg3
 def SUBTRACTION():
     pass
 def MOVEIMMEDIATE():
@@ -116,17 +116,17 @@ def JUMPIFEQUAL():
     pass
 def HALT(s):
     return bin(int(return_key(s)), 5) + "00000000000"
+########################
 def return_key(val):
     for key, value in functionOpcode.items():
         if value == val:
             return key
     return -1
-
+#########################
 lst = [[]]
 x: str
 ans = []
-# ans is the 1d list in which all the binary values are being stored
-
+# ans is the 1d list in which all the binary output values are being stored
 while True:
     line = input()
     if(line == "hlt"):
@@ -136,20 +136,41 @@ while True:
         continue
     else:
         lst = line.split(" ")
-
         # MJ edits:
         if lst[0] == 'add':
             reg1 = lst[1]
-            reg2 = lst[2]
-            reg3 = lst[3]
-            reg1 = ADDITION(reg1, reg2,reg3)
+            reg2 = returnRegVal(lst[2])
+            reg3 = returnRegVal(lst[3])
+            ADDITION(reg1, reg2, reg3)
+            p = 'addition'
+            p = return_key(p)
+            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
         # Case for addition operation:
         # Only reg1 value is going to get changed.
         # We send in three registers in order of their
         # appearance in the instruction line.
+        if lst[0] == 'sub':
+            p = 'subtraction'
+            p = return_key(p)
+            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
+        if lst[0] == 'mul':
+            p = 'multiplication'
+            p = return_key(p)
+            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
+        if lst[0] == 'xor':
+            p = 'addition'
+            p = return_key(p)
+            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
+        if lst[0] == 'or':
+            p = 'exclusiveor'
+            p = return_key(p)
+            ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
+        if lst[0] == 'and':
+            p = 'and'
+            p = return_key(p)
+            ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
 
-        #######################################
-
+###########################################
         if lst[0] == 'var':
             x = lst[1]
         if lst[0] == 'st' and lst[2] == x:
@@ -171,4 +192,5 @@ while True:
 
 for i in ans:
     print(i)
+
 
