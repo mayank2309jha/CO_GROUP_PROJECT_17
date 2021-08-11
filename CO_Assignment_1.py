@@ -129,7 +129,7 @@ def return_key(val):
             return key
     return -1
 #############################################################
-lst = [[]]
+lst = []
 x: str
 ans = []
 # ans is the 1d list in which all the binary output values are being stored
