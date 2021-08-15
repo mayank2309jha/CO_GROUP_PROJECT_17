@@ -1,6 +1,8 @@
-def bin(value, noOfDigits = 32 ):      # returns the binary value of the number
+import sys
 
-    i = 1 << noOfDigits - 1            # Also takes the no of digit to be displayed for representation and default is 32
+def bin(value, noOfDigits = 16):  # returns the binary value of the number
+
+    i = 1 << noOfDigits - 1  # Also takes the no of digit to be displayed for representation and default is 32
     x = ""
     while (i > 0):
         if ((value & i) != 0):
@@ -9,26 +11,31 @@ def bin(value, noOfDigits = 32 ):      # returns the binary value of the number
             x += "0"
         i = i // 2
     return x
+
+
+
 def registerValue(a):
-    if a.lower() == 'r0':
+    if a == 'R0':
         a = '000'
-    elif a.lower() == 'r1':
+    elif a == 'R1':
         a = '001'
-    elif a.lower() == 'r2':
+    elif a == 'R2':
         a = '010'
-    elif a.lower() == 'r3':
+    elif a == 'R3':
         a = '011'
-    elif a.lower() == 'r4':
+    elif a == 'R4':
         a = '100'
-    elif a.lower() == 'r5':
+    elif a == 'R5':
         a = '101'
-    elif a.lower() == 'r6':
+    elif a == 'R6':
         a = '110'
-    elif a.lower() == 'flags':
-        a = '111'
+    else:
+        pass
 
     return a
-functionOpcode = {'0': 'addition' ,
+
+
+functionOpcode = {'0': 'addition',
                   '1': 'subtraction',
                   '2': 'moveimmediate',
                   '3': 'moveregister',
@@ -48,179 +55,251 @@ functionOpcode = {'0': 'addition' ,
                   '17': 'jumpifgreaterthan',
                   '18': 'jumpifequal',
                   '19': 'halt'}
-def binToDec(x):
-    num = 0
-    i = 0
-    while(x>0):
-        y = x%10
-        if(y==1):
-            num = num + pow(2,i)
-        i = i+1
-        x = (x - y)/10
-    return num
-#####################################################################
-def ADDITION(destReg,SourceReg1, SourceReg2):
-    # Here we will have the registerValue of our three registers.
-    destination = binToDec(destReg)
-    firstsource = binToDec(SourceReg1)
-    secondsource = binToDec(SourceReg2)
-    #x, y , z will be the index of binOfReg which is to be changed
-    binOfReg[destination] = binOfReg[firstsource] + binOfReg[secondsource]
-def SUBTRACTION(destReg,SourceReg1, SourceReg2):
-    destination = binToDec(destReg)
-    firstsource = binToDec(SourceReg1)
-    secondsource = binToDec(SourceReg2)
-    binOfReg[destination] = binOfReg[firstsource] - binOfReg[secondsource]
-#####################################################################
-def MOVEIMMEDIATE():
-    pass
-def MOVEREGISTER():
-    pass
-def LOAD():
-    pass
-def STORE():
-    pass
-#####################################################################
-def MULTIPLY(destReg,SourceReg1, SourceReg2):
-    destination = binToDec(destReg)
-    firstsource = binToDec(SourceReg1)
-    secondsource = binToDec(SourceReg2)
-    binOfReg[destination] = binOfReg[firstsource] * binOfReg[secondsource]
-#####################################################################
-def DIVIDE():
-    pass
-def RIGHTSHIFT():
-    pass
-def LEFTSHIFT():
-    pass
-#####################################################################
-def EXCLUSIVEOR(destReg,SourceReg1, SourceReg2):
-    destination = binToDec(destReg)
-    firstsource = binToDec(SourceReg1)
-    secondsource = binToDec(SourceReg2)
-    binOfReg[destination] = binOfReg[firstsource] ^ binOfReg[secondsource]
-def OR(destReg,SourceReg1, SourceReg2):
-    destination = binToDec(destReg)
-    firstsource = binToDec(SourceReg1)
-    secondsource = binToDec(SourceReg2)
-    binOfReg[destination] = binOfReg[firstsource] | binOfReg[secondsource]
-def AND(destReg,SourceReg1, SourceReg2):
-    destination = binToDec(destReg)
-    firstsource = binToDec(SourceReg1)
-    secondsource = binToDec(SourceReg2)
-    binOfReg[destination] = binOfReg[firstsource] & binOfReg[secondsource]
-#####################################################################
-def INVERT():
-    pass
-def COMPARE():
-    pass
-def UNCONDITIONALJUMP():
-    pass
-def JUMPIFLESSTHAN():
-    pass
-def JUMPIFGREATERTHAN():
-    pass
-def JUMPIFEQUAL():
-    pass
-############################################################
+
 def return_key(val):
     for key, value in functionOpcode.items():
         if value == val:
             return key
     return -1
-#############################################################
-lst = []
+
+def binToDec(x):
+    num = 0
+    i = 0
+    while (x > 0):
+        y = x % 10
+        if (y == 1):
+            num += pow(2, i)
+        i = i + 1
+        x = (x - y) / 10
+    return num
+
+def NOT(x):
+    y = ""
+    for i in x:
+        if i == "0":
+            y += "1"
+        elif i == "1":
+            y += "0"
+    return int(y)
+
+var = {}     # variable storage list containing variable name and value of the variable (default as = 0)
+
+label = {}   # label function not yet implemented
+
+def checkName(x):
+
+    return x.isalnum()
+
+flag = []
+
+
 x: str
+
+lst = []
+
 ans = []
-# ans is the 1d list in which all the binary output values are being stored
-binOfReg = [0,0,1,0,0,0];
-# An array containing the value contained in each register. Initially all elements are 0.
-while True:
-    line = input()
-    if(line == "hlt"):
-        ans.append( bin(int(return_key('halt')),5)+"00000000000")
+
+registerStorage = [0, 0, 0, 0, 0, 0, 0, 0]
+
+complete_input = sys.stdin.readlines()
+
+for line in complete_input:
+    if (line == "hlt"):
+        lst.append(['hlt'])
         break
-    elif(line == ""):
+    elif (line == ""):
         continue
     else:
-        lst = line.split(" ")
-        # MJ edits:
-        if lst[0] == 'add':
-            destReg = int(registerValue(lst[1]))
-            SourceReg1 = int(registerValue(lst[2]))
-            SourceReg2 = int(registerValue(lst[3]))
-            ADDITION(destReg,SourceReg1, SourceReg2)
-            # Case for addition operation:
-            # Only reg1 value is going to get changed.
-            # We send in three registers in order of their
-            # appearance in the instruction line.
-            p = 'addition'
-            p = return_key(p)
-            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
-        if lst[0] == 'sub':
-            destReg = int(registerValue(lst[1]))
-            SourceReg1 = int(registerValue(lst[2]))
-            SourceReg2 = int(registerValue(lst[3]))
-            SUBTRACTION(destReg,SourceReg1, SourceReg2)
-            p = 'subtraction'
-            p = return_key(p)
-            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
-        if lst[0] == 'mul':
-            destReg = int(registerValue(lst[1]))
-            SourceReg1 = int(registerValue(lst[2]))
-            SourceReg2 = int(registerValue(lst[3]))
-            MULTIPLY(destReg,SourceReg1, SourceReg2)
-            p = 'multiplication'
-            p = return_key(p)
-            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
-        if lst[0] == 'xor':
-            destReg = int(registerValue(lst[1]))
-            SourceReg1 = int(registerValue(lst[2]))
-            SourceReg2 = int(registerValue(lst[3]))
-            EXCLUSIVEOR(destReg,SourceReg1, SourceReg2)
-            p = 'addition'
-            p = return_key(p)
-            ans.append(bin(int(p),5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
-        if lst[0] == 'or':
-            destReg = int(registerValue(lst[1]))
-            SourceReg1 = int(registerValue(lst[2]))
-            SourceReg2 = int(registerValue(lst[3]))
-            OR(destReg,SourceReg1, SourceReg2)
-            p = 'exclusiveor'
-            p = return_key(p)
-
-            ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
-        if lst[0] == 'and':
-            destReg = int(registerValue(lst[1]))
-            SourceReg1 = int(registerValue(lst[2]))
-            SourceReg2 = int(registerValue(lst[3]))
-            AND(destReg,SourceReg1, SourceReg2)
-            p = 'and'
-            p = return_key(p)
-
-            ans.append(bin(int(p), 5) + "00" + registerValue(lst[1]) + registerValue(lst[2]) + registerValue(lst[3]))
-
-###############################################################################
-        if lst[0] == 'var':
-            x = lst[1]
-        if lst[0] == 'st' and lst[2] == x:
-            x = lst[1]
-        if lst[0] == 'mov':
-            if lst[2][0] == 'r':
-                p = 'moveregister'
-                p = return_key(p)
-                ans.append(bin(int(p), 5) + "00000" + registerValue(lst[1]) + registerValue(lst[2]))
-            else:
-                p = 'moveimmediate'
-                if(lst[2][0] == '$'):
-                    lst[2].removeprefix('$')
-
-                p = return_key(p)
-                ans.append(bin(int(p), 5) + registerValue(lst[1]) + bin(int(lst[2]), 8))
+        lst.append(line.split(" "))
 
 
+for i in range(len(lst)):
+    if lst[i][0] == 'mov':
+        if (len(lst[i]) != 3):
+            print("Wrong syntax used for instructions")
+            break
+        if lst[i][2][0] == 'R':
+            p = 'moveregister'
+            registerStorage[binToDec(int(registerValue(lst[i][1])))] = registerStorage[binToDec(int(registerValue(lst[i][2])))]
+            ans.append(bin(int(return_key(p)), 5) + "00000" + registerValue(lst[i][1]) + registerValue(lst[i][2]))
+        else:
+            p = 'moveimmediate'
+            if lst[i][2][0] == '$':
+                lst[i][2] = lst[i][2][1:]
+                registerStorage[int(lst[i][1][1])] = int(lst[i][2])
+            ans.append(bin(int(return_key(p)), 5) + registerValue(lst[i][1]) + bin(int(lst[i][2]), 8))
+    elif lst[i][0] == 'add':
+        if(len(lst[i]) != 4):
+            print("Wrong syntax used for instructions")
+            break
+        registerStorage[binToDec(int(registerValue(lst[i][1])))] = registerStorage[binToDec(int(registerValue(lst[i][2])))] + registerStorage[binToDec(int(registerValue(lst[i][3])))]
+        temp = registerStorage[binToDec(int(registerValue(lst[i][1])))]
+        if(temp >= (2 ** 7) or temp < -(2 ** 7)):
+            ans.append("0000000000001000" )
+            break
+        p = 'addition'
+        ans.append(bin(int(return_key(p)), 5) + "00" + registerValue(lst[i][1]) + registerValue(lst[i][2]) + registerValue(lst[i][3]))
+    elif lst[i][0] == 'sub':
+        if (len(lst[i]) != 4):
+            print("Wrong syntax used for instructions")
+            break
+        registerStorage[binToDec(int(registerValue(lst[i][1])))] = registerStorage[binToDec(int(registerValue(lst[i][2])))] - registerStorage[binToDec(int(registerValue(lst[i][3])))]
+        temp = registerStorage[binToDec(int(registerValue(lst[i][1])))]
+        if (temp >= (2 ** 7) or temp < -(2 ** 7)):
+            ans.append("0000000000001000" )
+            break
+        p = 'subtraction'
+        ans.append(bin(int(return_key(p)), 5) + "00" + registerValue(lst[i][1]) + registerValue(lst[i][2]) + registerValue(lst[i][3]))
+    elif lst[i][0] == 'mul':
+        if (len(lst[i]) != 4):
+            print("Wrong syntax used for instructions")
+            break
+        registerStorage[binToDec(int(registerValue(lst[i][1])))] = registerStorage[binToDec(int(registerValue(lst[i][2])))] * registerStorage[binToDec(int(registerValue(lst[i][3])))]
+        temp = registerStorage[binToDec(int(registerValue(lst[i][1])))]
+        if (temp >= (2 ** 7) or temp < -(2 ** 7)):
+            ans.append("0000000000001000" )
+            break
+        p = 'multiply'
+        ans.append(bin(int(return_key(p)), 5) + "00" + registerValue(lst[i][1]) + registerValue(lst[i][2]) + registerValue(lst[i][3]))
+    elif lst[i][0] == 'div':
+        # Genral Syntax Error for any no. != 0
+        # second register should not be zero, R0 and R1 should not be initialised, quotient in R0 and remainder in R1
+        if (len(lst[i]) != 3):
+            print("Wrong syntax used for instructions")
+            break
+        if lst[i][1] == 'R1' or lst[i][1] == 'R0' or lst[i][2] == 'R1' or lst[i][2] == 'R0':
+            print("Wrong syntax used for instructions")
+            break
+        elif int(lst[i][2]) == 0:
+            print("Zero Division Error")
+            break
+        registerStorage[0] = binToDec(int(registerValue(lst[i][1]))) // binToDec(int(registerValue(lst[i][2])))
+        registerStorage[1] = binToDec(int(registerValue(lst[i][1]))) % binToDec(int(registerValue(lst[i][2])))
+        p = 'divide'
+        ans.append(bin(int(return_key(p)), 5) + "00000" + registerValue(lst[i][1]) + registerValue(lst[i][2]))
+    elif lst[i][0] == 'rs':
+        if (len(lst[i]) != 3):
+            print("Wrong syntax used for instructions")
+            break
+        p = 'rightshift'
+        lst[i][2] = lst[i][2][1:]
+        registerStorage[binToDec(int(registerValue(lst[i][1])))] //= int(lst[i][2])
+        ans.append(bin(int(return_key(p)), 5) + registerValue(lst[i][1]) + bin(int(lst[i][2]), 8))
+    elif lst[i][0] == 'ls':
+        if (len(lst[i]) != 3):
+            print("Wrong syntax used for instructions")
+            break
+        p = 'leftshift'
+        lst[i][2] = lst[i][2][1:]
+        registerStorage[binToDec(int(registerValue(lst[i][1])))] *= int(lst[i][2])
+        ans.append(bin(int(return_key(p)), 5) + registerValue(lst[i][1]) + bin(int(lst[i][2]), 8))
+    elif lst[i][0] == 'xor':
+        if (len(lst[i]) != 4):
+            print("Wrong syntax used for instructions")
+            break
+        registerStorage[int(binToDec(registerValue(lst[i][1])))] = registerStorage[int(binToDec(registerValue(lst[i][2])))] ^ registerStorage[int(binToDec(registerValue(lst[i][3])))]
+        p = 'exclusiveor'
+        ans.append(bin(int(return_key(p)), 5) + "00" + registerValue(lst[i][1]) + registerValue(lst[i][2]) + registerValue(lst[i][3]))
+    elif lst[i][0] == 'or':
+        if (len(lst[i]) != 4):
+            print("Wrong syntax used for instructions")
+            break
+        registerStorage[int(binToDec(registerValue(lst[i][1])))] = registerStorage[int(binToDec(registerValue(lst[i][2])))] | registerStorage[int(binToDec(registerValue(lst[i][3])))]
+        p = 'or'
+        ans.append(bin(int(return_key(p)), 5) + "00" + registerValue(lst[i][1]) + registerValue(lst[i][2]) + registerValue(lst[i][3]))
+    elif lst[i][0] == 'and':
+        if (len(lst[i]) != 4):
+            print("Wrong syntax used for instructions")
+            break
+        registerStorage[int(binToDec(registerValue(lst[i][1])))] = registerStorage[int(binToDec(registerValue(lst[i][2])))] & registerStorage[int(binToDec(registerValue(lst[i][3])))]
+        p = 'and'
+        ans.append(bin(int(return_key(p)), 5) + "00" + registerValue(lst[i][1]) + registerValue(lst[i][2]) + registerValue(lst[i][3]))
+    elif lst[i][0] == 'not':
+        if (len(lst[i]) != 3):
+            print("Wrong syntax used for instructions")
+            break
+        p = 'invert'
+        registerStorage[int(binToDec(registerValue(lst[i][1])))] = NOT(str(registerStorage[int(binToDec(registerValue(lst[i][2])))]))
+        ans.apoend(bin(int(return_key(p)), 5) + "00000" + registerValue(lst[i][1]) + registerValue(lst[i][2]))
+    elif lst[i][0] == 'cmp':
+        if (len(lst[i]) != 3):
+            print("Wrong syntax used for instructions")
+            break
+        if registerStorage[binToDec(int(registerValue(lst[i][1])))] > registerStorage[binToDec(int(registerValue(lst[i][1])))]:
+            flag.append("0000000000000010")
+        elif registerStorage[binToDec(int(registerValue(lst[i][1])))] < registerStorage[binToDec(int(registerValue(lst[i][1])))]:
+            flag.append("0000000000000100")
+        elif registerStorage[binToDec(int(registerValue(lst[i][1])))] == registerStorage[binToDec(int(registerValue(lst[i][1])))]:
+            flag.append("0000000000000001")
+    elif lst[i][0] == 'jmp':
+        if (len(lst[i]) != 2):
+            print("Wrong syntax used for instructions")
+            break
+        p = 'unconditionaljump'
+        i = binToDec(int(lst[i][1]))
+        ans.append(bin(int(return_key(p)), 5) + "000" + lst[i][1])
+    elif lst[i][0] == 'jlt':
+        if (len(lst[i]) != 2):
+            print("Wrong syntax used for instructions")
+            break
+        p = "jumpiflessthan"
+        for j in flag:
+            if j == "0000000000000100":
+                i = binToDec(int(lst[i][1]))
+        ans.append(bin(int(return_key(p)), 5) + "000" + lst[i][1])
+    elif lst[i][0] == 'jgt':
+        if (len(lst[i]) != 2):
+            print("Wrong syntax used for instructions")
+            break
+        p = "jumpifgreaterthan"
+        for j in flag:
+            if j == "0000000000000010":
+                i = binToDec(int(lst[i][1]))
+        ans.append(bin(int(return_key(p)), 5) + "000" + lst[i][1])
+    elif lst[i][0] == 'je':
+        if (len(lst[i]) != 2):
+            print("Wrong syntax used for instructions")
+            break
+        p = 'jumpifequal'
+        for j in flag:
+            if j == "0000000000000001":
+                i = binToDec(int(lst[i][1]))
+        ans.append(bin(int(return_key(p)), 5) + "000" + lst[i][1])
+    elif lst[i][0] == 'var':
+        if (len(lst[i]) != 2):
+            print("Wrong syntax used for instructions")
+            break
+        if i != 0 and lst[i-1][0] != 'var':
+            print("Variables not declared at the beginning")
+            break
+        if not checkname(lst[i][1]):
+            print("Use of undefined variables")
+            break
+        else:
+            if var.values() == lst[i][1]:
+                print("Multiple Names for the same Variable")
+                break
+            var[lst[i][1]] = 0
+    elif lst[i][0] == 'st':
+        if (len(lst[i]) != 3):
+            print("General Syntax Error")
+            break
+        p = 'store'
+        var[lst[i][2]] = registerStorage[binToDec(int(registerValue(lst[i][1])))]
+        ans.append(bin(int(return_key(p)), 5) + registerValue(lst[i][1]) + bin(i + 1, 8))
+    elif lst[i][0] == 'ld':
+        if (len(lst[i]) != 3):
+            print("General Syntax Error")
+            break
+        p = 'load'
+        registerStorage[binToDec(int(registerValue(lst[i][1])))] = registerStorage[binToDec(int(registerValue(lst[binToDec(int(lst[i][2]))][1])))]
+        ans.append(bin(int(return_key(p)), 5) + registerValue(lst[i][1]) + lst[i][2])
+    elif lst[i][0] == 'hlt':
+        ans.append(bin(int(return_key('halt')), 5) + "00000000000")
+        break
+    else:
+        print("Typos in instruction name or register name")
+        break
 
 for i in ans:
     print(i)
-
-
