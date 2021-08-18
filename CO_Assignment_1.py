@@ -101,9 +101,10 @@ ans = []
 
 registerStorage = [0, 0, 0, 0, 0, 0, 0, 0]
 
-complete_input = sys.stdin.readlines()
+#complete_input = sys.stdin.readlines()
 
-for line in complete_input:
+while True:
+    line = input()
     if (line == "hlt"):
         lst.append(['hlt'])
         break
