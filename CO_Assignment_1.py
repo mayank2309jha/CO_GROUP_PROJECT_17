@@ -272,7 +272,7 @@ for i in range(len(lst)):
         if i != 0 and lst[i-1][0] != 'var':
             print("Variables not declared at the beginning")
             break
-        if not checkname(lst[i][1]):
+        if not checkName(lst[i][1]):
             print("Use of undefined variables")
             break
         else:
